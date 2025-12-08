@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Version>0.0.0.1</Version>
     <Description>Updates the targeting circle in The Final Verse.</Description>
-    <PackageProjectUrl>https://github.com/goatcorp/SamplePlugin</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/mobster352/FinalVerseTargeting/</PackageProjectUrl>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
