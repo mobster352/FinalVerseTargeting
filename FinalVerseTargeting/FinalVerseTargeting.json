@@ -1,0 +1,12 @@
+{
+  "Author": "Azami Kensaki",
+  "Name": "Final Verse Targeting",
+  "Punchline": "Adds color based targeting in The Final Verse.",
+  "Description": "Adds the ability to make the current target more visible.",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "sample",
+    "plugin",
+    "goats"
+  ]
+}
