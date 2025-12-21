@@ -1,0 +1,18 @@
+{
+  "Author": "Azami Kensaki",
+  "Name": "Final Verse Targeting",
+  "Punchline": "Adds color based targeting in The Final Verse.",
+  "Description": "Adds the ability to make the current target more visible.",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "sample",
+    "plugin",
+    "goats"
+  ],
+  "IconUrl": "https://raw.githubusercontent.com/Haplo064/PixelPerfect/master/images/icon.png",
+  "RepoUrl": "https://github.com/mobster352/FinalVerseTargeting",
+  "DownloadLinkInstall": "https://github.com/mobster352/FinalVerseTargeting/releases/download/ZipV2/output.zip",
+  "DownloadLinkTesting": "https://github.com/mobster352/FinalVerseTargeting/releases/download/ZipV2/output.zip",
+  "DownloadLinkUpdate": "https://github.com/mobster352/FinalVerseTargeting/releases/download/ZipV2/output.zip",
+  "LastUpdate": "1701231234"
+}
