@@ -19,6 +19,7 @@ public class Configuration : IPluginConfiguration
     public int TargetingTypeId {get;set;} = 0;
     public int RadiusModifier {get;set;} = 0;
     public readonly string[] targetingTypes = new[]{ "Solid", "Dashed"};
+    public bool UseColorBox {get;set;} = false;
 
 
     // The below exist just to make saving less cumbersome

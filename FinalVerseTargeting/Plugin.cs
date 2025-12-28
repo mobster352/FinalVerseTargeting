@@ -23,6 +23,7 @@ using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using Lumina;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 namespace SamplePlugin;
 
@@ -39,6 +40,7 @@ public sealed class Plugin : IDalamudPlugin
     [PluginService] internal static IPluginLog Log { get; private set; } = null!;
     [PluginService] internal static IFramework Framework { get; private set; } = null!;
     [PluginService] internal static ITargetManager TargetManager { get; private set; } = null!;
+    [PluginService] internal static ICondition Condition { get; private set; } = null!;
 
     // private const string CommandName = "/fv";
 
@@ -49,11 +51,13 @@ public sealed class Plugin : IDalamudPlugin
     // private MainWindow MainWindow { get; init; }
 
     private IGameObject CurrentTarget;
+    private float hp1;
+    private float hp2;
 
     public Plugin()
     {
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-
+        
         // You might normally want to embed resources and load them from the manifest stream
         var goatImagePath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "goat.png");
 
@@ -79,6 +83,7 @@ public sealed class Plugin : IDalamudPlugin
         // Adds another button doing the same but for the main ui of the plugin
         // PluginInterface.UiBuilder.OpenMainUi += ToggleMainUi;
 
+        PluginInterface.UiBuilder.Draw += Draw;
         PluginInterface.UiBuilder.Draw += DrawRing;
 
         // Add a simple message to the log with level set to information
@@ -137,6 +142,7 @@ public sealed class Plugin : IDalamudPlugin
         PluginInterface.UiBuilder.Draw -= WindowSystem.Draw;
         PluginInterface.UiBuilder.OpenConfigUi -= ToggleConfigUi;
         // PluginInterface.UiBuilder.OpenMainUi -= ToggleMainUi;
+        PluginInterface.UiBuilder.Draw -= Draw;
         PluginInterface.UiBuilder.Draw -= DrawRing;
 
         Framework.Update -= this.OnFrameworkTick;
@@ -224,5 +230,88 @@ public sealed class Plugin : IDalamudPlugin
         }
         if (fill) { ImGui.GetWindowDrawList().PathFillConvex(colour); }
         else { ImGui.GetWindowDrawList().PathStroke(colour, ImDrawFlags.Closed, thicc); }
+    }
+
+    private void DrawBox(float x, float y, float hp, int i)
+    {
+        // i=10 - second target
+        // i=11 - first target
+        if(i!=10 && i!=11) return;
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, new Vector2(0, 0));
+        Dalamud.Interface.Utility.ImGuiHelpers.ForceNextWindowMainViewport();
+        Dalamud.Interface.Utility.ImGuiHelpers.SetNextWindowPosRelativeMainViewport(new Vector2(0, 0));
+        ImGui.Begin("Canvas",
+            ImGuiWindowFlags.NoInputs | ImGuiWindowFlags.NoNav | ImGuiWindowFlags.NoTitleBar |
+            ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoFocusOnAppearing);
+        ImGui.SetWindowSize(ImGui.GetIO().DisplaySize);
+
+        uint colour_g = ImGui.GetColorU32(new Vector4(0, 255, 0, Configuration.Alpha));
+        uint colour_y = ImGui.GetColorU32(new Vector4(111, 255, 0, Configuration.Alpha));
+        uint colour_r = ImGui.GetColorU32(new Vector4(255, 0, 0, Configuration.Alpha));
+
+        Vector2 topLeft = new Vector2(x-35,y-15);
+        Vector2 bottomRight = new Vector2(x+5,y+15);
+
+        if (i == 10)
+        {
+            if(hp1 - hp2 < 10)
+                ImGui.AddRectFilled(ImGui.GetWindowDrawList(), topLeft, bottomRight, colour_g);
+            else if(hp1 - hp2 >= 10 && hp1 - hp2 < 15)
+                ImGui.AddRectFilled(ImGui.GetWindowDrawList(), topLeft, bottomRight, colour_y);
+            else
+                ImGui.AddRectFilled(ImGui.GetWindowDrawList(), topLeft, bottomRight, colour_r);
+        }
+
+        if (i == 11)
+        {
+            if(hp2 - hp1 < 10)
+                ImGui.AddRectFilled(ImGui.GetWindowDrawList(), topLeft, bottomRight, colour_g);
+            else if(hp2 - hp1 >= 10 && hp2 - hp1 < 15)
+                ImGui.AddRectFilled(ImGui.GetWindowDrawList(), topLeft, bottomRight, colour_y);
+            else
+                ImGui.AddRectFilled(ImGui.GetWindowDrawList(), topLeft, bottomRight, colour_r);
+        }
+    }
+
+    private unsafe void Draw()
+    {
+        if (Configuration.UseColorBox && Condition[Dalamud.Game.ClientState.Conditions.ConditionFlag.InCombat] && !ClientState.IsPvP)
+        {
+            try
+            {
+                var enlist = GameGui.GetAddonByName("_EnemyList", 1);
+                if(enlist != IntPtr.Zero)
+                {
+                    var enlistAtk = (AtkUnitBase*)enlist.Address;
+                    if (enlistAtk->UldManager.NodeListCount < 12) return;
+                    var baseX = enlistAtk->X;
+                    var baseY = enlistAtk->Y;
+                    if (enlistAtk->IsVisible)
+                    {
+                        for (int i = 4; i <= 11; i++)
+                        {
+                            var enemyTile = (AtkComponentNode*)enlistAtk->UldManager.NodeList[i];
+                            if (enemyTile->AtkResNode.IsVisible())
+                            {
+                                if (enemyTile->Component->UldManager.NodeListCount < 11) continue;
+                                var enemyBar = (AtkImageNode*)enemyTile->Component->UldManager.NodeList[10];
+                                var hp = (enemyBar->AtkResNode.ScaleX * 100f);
+                                if(i==11) hp1 = hp;
+                                if(i==10) hp2 = hp;
+                                DrawBox(enemyTile->AtkResNode.X * enlistAtk->Scale + baseX - 2f,
+                                    enemyTile->AtkResNode.Y * enlistAtk->Scale + enemyTile->AtkResNode.Height * enlistAtk->Scale / 2f + baseY,
+                                    hp,
+                                    i);
+                            }
+
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message + "\n" + e.StackTrace);
+            }
+        }
     }
 }

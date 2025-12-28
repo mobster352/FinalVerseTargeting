@@ -8,5 +8,6 @@
     "sample",
     "plugin",
     "goats"
-  ]
+  ],
+  "IconUrl": "https://raw.githubusercontent.com/mobster352/FinalVerseTargeting/refs/heads/master/Data/final_verse_icon.png"
 }

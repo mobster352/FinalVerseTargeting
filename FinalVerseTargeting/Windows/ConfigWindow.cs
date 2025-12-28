@@ -82,6 +82,13 @@ public class ConfigWindow : Window, IDisposable
             configuration.Save();
         }
 
+        var configUseColorBox = configuration.UseColorBox;
+        if(ImGui.Checkbox("Use Color Box", ref configUseColorBox))
+        {
+            configuration.UseColorBox = configUseColorBox;
+            configuration.Save();
+        }
+
         // Can't ref a property, so use a local copy
         // var configValue = configuration.SomePropertyToBeSavedAndWithADefault;
         // if (ImGui.Checkbox("Random Config Bool", ref configValue))
