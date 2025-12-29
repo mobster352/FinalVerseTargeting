@@ -5,7 +5,7 @@
         "Punchline": "Adds color based targeting in The Final Verse.",
         "Description": "Adds the ability to make the current target more visible.",
         "InternalName": "FinalVerseTargeting",
-        "AssemblyVersion": "0.0.0.3",
+        "AssemblyVersion": "0.0.0.4",
         "IsHide": false,
         "IsTestingExclusive": false,
         "DalamudApiLevel": 14,
