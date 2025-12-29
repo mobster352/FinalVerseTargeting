@@ -246,7 +246,7 @@ public sealed class Plugin : IDalamudPlugin
         ImGui.SetWindowSize(ImGui.GetIO().DisplaySize);
 
         uint colour_g = ImGui.GetColorU32(new Vector4(0, 255, 0, Configuration.Alpha));
-        uint colour_y = ImGui.GetColorU32(new Vector4(111, 255, 0, Configuration.Alpha));
+        uint colour_y = ImGui.GetColorU32(new Vector4(255, 255, 0, Configuration.Alpha));
         uint colour_r = ImGui.GetColorU32(new Vector4(255, 0, 0, Configuration.Alpha));
 
         Vector2 topLeft = new Vector2(x-35,y-15);
@@ -256,7 +256,7 @@ public sealed class Plugin : IDalamudPlugin
         {
             if(hp1 - hp2 < 10)
                 ImGui.AddRectFilled(ImGui.GetWindowDrawList(), topLeft, bottomRight, colour_g);
-            else if(hp1 - hp2 >= 10 && hp1 - hp2 < 15)
+            else if(hp1 - hp2 >= 10 && hp1 - hp2 < 14)
                 ImGui.AddRectFilled(ImGui.GetWindowDrawList(), topLeft, bottomRight, colour_y);
             else
                 ImGui.AddRectFilled(ImGui.GetWindowDrawList(), topLeft, bottomRight, colour_r);
@@ -266,7 +266,7 @@ public sealed class Plugin : IDalamudPlugin
         {
             if(hp2 - hp1 < 10)
                 ImGui.AddRectFilled(ImGui.GetWindowDrawList(), topLeft, bottomRight, colour_g);
-            else if(hp2 - hp1 >= 10 && hp2 - hp1 < 15)
+            else if(hp2 - hp1 >= 10 && hp2 - hp1 < 14)
                 ImGui.AddRectFilled(ImGui.GetWindowDrawList(), topLeft, bottomRight, colour_y);
             else
                 ImGui.AddRectFilled(ImGui.GetWindowDrawList(), topLeft, bottomRight, colour_r);
