@@ -3,6 +3,8 @@
   "Name": "Final Verse Targeting",
   "Punchline": "Adds color based targeting in The Final Verse.",
   "Description": "Adds the ability to make the current target more visible.",
+  "InternalName": "FinalVerseTargeting",
+  "AssemblyVersion": "0.0.0.4",
   "ApplicableVersion": "any",
   "Tags": [
     "sample",
